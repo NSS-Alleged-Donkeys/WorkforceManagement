@@ -140,50 +140,10 @@ INSERT INTO Customer
 VALUES
 ('Madison', 'Peper');
 
-INSERT INTO ProductType
-([Name])
-VALUES
-('Electronics');
-
-INSERT INTO PaymentType
-(AcctNumber, [Name], CustomerId)
-VALUES
-(0123, 'Visa', 1);
-
-INSERT INTO Product
-(Price, Title, [Description], Quantity, CustomerId, ProductTypeId)
-VALUES
-(49, 'Pixel XL', 'We the best phone', 234, 1, 1);
-
-INSERT INTO [Order]
-(CustomerId, PaymentTypeId)
-VALUES
-(1, 1);
-
 INSERT INTO Customer
 (FirstName, LastName)
 VALUES
 ('Matt', 'Hall');
-
-INSERT INTO ProductType
-([Name])
-VALUES
-('Alcohol');
-
-INSERT INTO PaymentType
-(AcctNumber, [Name], CustomerId)
-VALUES
-(1234, 'Discover', 2);
-
-INSERT INTO Product
-(Price, Title, [Description], Quantity, CustomerId, ProductTypeId)
-VALUES
-(10, 'Yuengling', 'Americas Oldest Brewery', 24, 2, 2);
-
-INSERT INTO [Order]
-(CustomerId, PaymentTypeId)
-VALUES
-(2, 2);
 
 INSERT INTO Customer
 (FirstName, LastName)
@@ -194,17 +154,57 @@ VALUES
 INSERT INTO ProductType
 ([Name])
 VALUES
+('Electronics');
+
+INSERT INTO ProductType
+([Name])
+VALUES
+('Alcohol');
+
+INSERT INTO ProductType
+([Name])
+VALUES
 ('Books');
 
 INSERT INTO PaymentType
 (AcctNumber, [Name], CustomerId)
 VALUES
-(0987, 'MasterCard', 3)
+(0123, 'Visa', 1);
+
+INSERT INTO PaymentType
+(AcctNumber, [Name], CustomerId)
+VALUES
+(1234, 'Discover', 2);
+
+INSERT INTO PaymentType
+(AcctNumber, [Name], CustomerId)
+VALUES
+(0987, 'MasterCard', 3);
+
+INSERT INTO Product
+(Price, Title, [Description], Quantity, CustomerId, ProductTypeId)
+VALUES
+(49, 'Pixel XL', 'We the best phone', 234, 1, 1);
+
+INSERT INTO Product
+(Price, Title, [Description], Quantity, CustomerId, ProductTypeId)
+VALUES
+(10, 'Yuengling', 'Americas Oldest Brewery', 24, 2, 2);
 
 INSERT INTO Product
 (Price, Title, [Description], Quantity, CustomerId, ProductTypeId)
 VALUES
 (24, 'The Hobbit', 'A short dude goes on an adventure.', 500, 3, 3);
+
+INSERT INTO [Order]
+(CustomerId, PaymentTypeId)
+VALUES
+(1, 1);
+
+INSERT INTO [Order]
+(CustomerId, PaymentTypeId)
+VALUES
+(2, 2);
 
 INSERT INTO [Order]
 (CustomerId, PaymentTypeId)
@@ -274,14 +274,14 @@ VALUES
 INSERT INTO OrderProduct
 (OrderId, ProductId)
 VALUES
-(3,3)
+(3,3);
 
 INSERT INTO OrderProduct
 (OrderId, ProductId)
 VALUES
-(3,1)
+(3,1);
 
 INSERT INTO OrderProduct
 (OrderId, ProductId)
 VALUES
-(2,2)
+(2,2);
