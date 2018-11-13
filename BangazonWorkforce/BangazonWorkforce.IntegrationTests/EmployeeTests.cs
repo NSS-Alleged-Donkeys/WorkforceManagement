@@ -48,6 +48,7 @@ namespace BangazonWorkforce.IntegrationTests
             string firstName = "Matt";
             string lastName = "Hall";
             string dept = "Sales";
+            string fullName = firstName + " " + lastName;
 
             // Act
             HttpResponseMessage response = await _client.GetAsync(url);
@@ -59,8 +60,7 @@ namespace BangazonWorkforce.IntegrationTests
 
             IHtmlDocument indexPage = await HtmlHelpers.GetDocumentAsync(response);
             IHtmlCollection<IElement> tds = indexPage.QuerySelectorAll("td");
-            Assert.Contains(tds, td => td.TextContent.Trim() == firstName);
-            Assert.Contains(tds, td => td.TextContent.Trim() == lastName);
+            Assert.Contains(tds, td => td.TextContent.Trim() == fullName);
             Assert.Contains(tds, td => td.TextContent.Trim() == dept);
         }
 

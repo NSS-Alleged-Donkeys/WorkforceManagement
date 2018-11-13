@@ -18,6 +18,15 @@ namespace BangazonWorkforce.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
+        [Required(ErrorMessage = "You must provide a last name for this employee")]
+        [Display(Name = "FullName")]
+        public string FullName
+        {
+            get {
+                return $"{FirstName} {LastName}";
+            }
+        }
+
         [Display(Name = "Is Supervisor?")]
         public bool IsSupervisor { get; set; }
 
