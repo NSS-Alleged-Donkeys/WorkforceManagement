@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using Dapper;
+using AngleSharp.Dom;
 
 namespace BangazonWorkforce.IntegrationTests
 {
@@ -39,6 +40,29 @@ namespace BangazonWorkforce.IntegrationTests
                 response.Content.Headers.ContentType.ToString());
         }
 
+        [Fact]
+        public async Task Get_IndexDisplaysCorrectEmployees()
+        {
+            // Arrange
+            string url = "/employee";
+            string firstName = "Matt";
+            string lastName = "Hall";
+            string dept = "Sales";
+
+            // Act
+            HttpResponseMessage response = await _client.GetAsync(url);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+            Assert.Equal("text/html; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+
+            IHtmlDocument indexPage = await HtmlHelpers.GetDocumentAsync(response);
+            IHtmlCollection<IElement> tds = indexPage.QuerySelectorAll("td");
+            Assert.Contains(tds, td => td.TextContent.Trim() == firstName);
+            Assert.Contains(tds, td => td.TextContent.Trim() == lastName);
+            Assert.Contains(tds, td => td.TextContent.Trim() == dept);
+        }
 
         [Fact]
         public async Task Post_CreateAddsEmployee()
