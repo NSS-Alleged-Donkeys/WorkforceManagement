@@ -41,96 +41,97 @@ DROP TABLE IF EXISTS Customer;
 
 
 CREATE TABLE Department (
-	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
-	[Name] VARCHAR(55) NOT NULL,
-	Budget 	INTEGER NOT NULL
+    Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+    [Name] VARCHAR(55) NOT NULL,
+    Budget  INTEGER NOT NULL
 );
 
 CREATE TABLE Employee (
-	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
-	FirstName VARCHAR(55) NOT NULL,
-	LastName VARCHAR(55) NOT NULL,
-	DepartmentId INTEGER NOT NULL,
-	IsSuperVisor BIT NOT NULL DEFAULT(0),
+    Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+    FirstName VARCHAR(55) NOT NULL,
+    LastName VARCHAR(55) NOT NULL,
+    DepartmentId INTEGER NOT NULL,
+    IsSuperVisor BIT NOT NULL DEFAULT(0),
     CONSTRAINT FK_EmployeeDepartment FOREIGN KEY(DepartmentId) REFERENCES Department(Id)
 );
 
 CREATE TABLE Computer (
-	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
-	PurchaseDate DATETIME NOT NULL,
-	DecomissionDate DATETIME
+    Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+    PurchaseDate DATETIME NOT NULL,
+    DecomissionDate DATETIME,
+    Make VARCHAR(55) NOT NULL,
+    Manufacturer VARCHAR(55) NOT NULL
 );
 
 CREATE TABLE ComputerEmployee (
-	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
-	EmployeeId INTEGER NOT NULL,
-	ComputerId INTEGER NOT NULL,
-	AssignDate DATETIME NOT NULL,
-	UnassignDate DATETIME,
+    Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+    EmployeeId INTEGER NOT NULL,
+    ComputerId INTEGER NOT NULL,
+    AssignDate DATETIME NOT NULL,
+    UnassignDate DATETIME,
     CONSTRAINT FK_ComputerEmployee_Employee FOREIGN KEY(EmployeeId) REFERENCES Employee(Id),
     CONSTRAINT FK_ComputerEmployee_Computer FOREIGN KEY(ComputerId) REFERENCES Computer(Id)
 );
 
-
 CREATE TABLE TrainingProgram (
-	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
-	StartDate DATETIME NOT NULL,
-	EndDate DATETIME NOT NULL,
-	MaxAttendees INTEGER NOT NULL
+    Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+    [Name] VARCHAR(255) NOT NULL,
+    StartDate DATETIME NOT NULL,
+    EndDate DATETIME NOT NULL,
+    MaxAttendees INTEGER NOT NULL
 );
 
 CREATE TABLE EmployeeTraining (
-	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
-	EmployeeId INTEGER NOT NULL,
-	TrainingProgramId INTEGER NOT NULL,
+    Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+    EmployeeId INTEGER NOT NULL,
+    TrainingProgramId INTEGER NOT NULL,
     CONSTRAINT FK_EmployeeTraining_Employee FOREIGN KEY(EmployeeId) REFERENCES Employee(Id),
     CONSTRAINT FK_EmployeeTraining_Training FOREIGN KEY(TrainingProgramId) REFERENCES TrainingProgram(Id)
 );
 
 CREATE TABLE ProductType (
-	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
-	[Name] VARCHAR(55) NOT NULL
+    Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+    [Name] VARCHAR(55) NOT NULL
 );
 
 CREATE TABLE Customer (
-	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
-	FirstName VARCHAR(55) NOT NULL,
-	LastName VARCHAR(55) NOT NULL
+    Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+    FirstName VARCHAR(55) NOT NULL,
+    LastName VARCHAR(55) NOT NULL
 );
 
 CREATE TABLE Product (
-	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
-	ProductTypeId INTEGER NOT NULL,
-	CustomerId INTEGER NOT NULL,
-	Price INTEGER NOT NULL,
-	Title VARCHAR(255) NOT NULL,
-	[Description] VARCHAR(255) NOT NULL,
-	Quantity INTEGER NOT NULL,
+    Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+    ProductTypeId INTEGER NOT NULL,
+    CustomerId INTEGER NOT NULL,
+    Price INTEGER NOT NULL,
+    Title VARCHAR(255) NOT NULL,
+    [Description] VARCHAR(255) NOT NULL,
+    Quantity INTEGER NOT NULL,
     CONSTRAINT FK_Product_ProductType FOREIGN KEY(ProductTypeId) REFERENCES ProductType(Id),
     CONSTRAINT FK_Product_Customer FOREIGN KEY(CustomerId) REFERENCES Customer(Id)
 );
 
-
 CREATE TABLE PaymentType (
-	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
-	AcctNumber INTEGER NOT NULL,
-	[Name] VARCHAR(55) NOT NULL,
-	CustomerId INTEGER NOT NULL,
+    Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+    AcctNumber INTEGER NOT NULL,
+    [Name] VARCHAR(55) NOT NULL,
+    CustomerId INTEGER NOT NULL,
     CONSTRAINT FK_PaymentType_Customer FOREIGN KEY(CustomerId) REFERENCES Customer(Id)
 );
 
 CREATE TABLE [Order] (
-	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
-	CustomerId INTEGER NOT NULL,
-	PaymentTypeId INTEGER,
+    Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+    CustomerId INTEGER NOT NULL,
+    PaymentTypeId INTEGER,
     CONSTRAINT FK_Order_Customer FOREIGN KEY(CustomerId) REFERENCES Customer(Id),
     CONSTRAINT FK_Order_Payment FOREIGN KEY(PaymentTypeId) REFERENCES PaymentType(Id)
 );
 
 CREATE TABLE OrderProduct (
-	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
-	OrderId INTEGER NOT NULL,
-	ProductId INTEGER NOT NULL,
+    Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+    OrderId INTEGER NOT NULL,
+    ProductId INTEGER NOT NULL,
     CONSTRAINT FK_OrderProduct_Product FOREIGN KEY(ProductId) REFERENCES Product(Id),
     CONSTRAINT FK_OrderProduct_Order FOREIGN KEY(OrderId) REFERENCES [Order](Id)
 );
@@ -149,7 +150,6 @@ INSERT INTO Customer
 (FirstName, LastName)
 VALUES
 ('Taylor', 'Gulley');
-
 
 INSERT INTO ProductType
 ([Name])
@@ -242,34 +242,34 @@ VALUES
 ('Matt', 'Hall', 3, 0);
 
 INSERT INTO TrainingProgram
-(StartDate, EndDate, MaxAttendees)
+([Name], StartDate, EndDate, MaxAttendees)
 VALUES
-('20180704 09:00:00 AM', '20190108 12:00:00 PM', 30);
+('BS Training', '20180704 09:00:00 AM', '20190108 12:00:00 PM', 30);
 
 INSERT INTO TrainingProgram
-(StartDate, EndDate, MaxAttendees)
+([Name], StartDate, EndDate, MaxAttendees)
 VALUES
-('20180530 09:00:00 AM', '20180908 13:30:00 PM', 25);
+('POS Training', '20180530 09:00:00 AM', '20180908 13:30:00 PM', 25);
 
 INSERT INTO TrainingProgram
-(StartDate, EndDate, MaxAttendees)
+([Name], StartDate, EndDate, MaxAttendees)
 VALUES
-('20190319 09:00:00 AM', '20190610 20:00:00 PM', 50);
+('How to Be Nice to Others', '20190319 09:00:00 AM', '20190610 20:00:00 PM', 50);
 
 INSERT INTO Computer
-(PurchaseDate, DecomissionDate)
+(PurchaseDate, DecomissionDate, Make, Manufacturer)
 VALUES
-('20111010 07:00:00 AM', '20121010 15:00:00 PM');
+('20111010 07:00:00 AM', '20121010 15:00:00 PM', 'Schmapple III', 'Schmapple');
 
 INSERT INTO Computer
-(PurchaseDate, DecomissionDate)
+(PurchaseDate, DecomissionDate, Make, Manufacturer)
 VALUES
-('20121010 07:00:00 AM', '20141210 17:00:00 PM');
+('20121010 07:00:00 AM', '20141210 17:00:00 PM', 'Schmurface Pro', 'Schmicrosoft');
 
 INSERT INTO Computer
-(PurchaseDate, DecomissionDate)
+(PurchaseDate, DecomissionDate, Make, Manufacturer)
 VALUES
-('20170305 07:00:00 AM', '20181110 05:00:00 AM');
+('20170305 07:00:00 AM', '20181110 05:00:00 AM', 'Schmixel Book', 'Schmoogle');
 
 INSERT INTO OrderProduct
 (OrderId, ProductId)
