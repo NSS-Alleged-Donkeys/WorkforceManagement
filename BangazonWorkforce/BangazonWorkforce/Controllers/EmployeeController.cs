@@ -27,6 +27,7 @@ namespace BangazonWorkforce.Controllers
             _config = config;
         }
 
+        // Get employees
         public async Task<IActionResult> Index()
         {
             using (IDbConnection conn = Connection)
@@ -52,6 +53,7 @@ namespace BangazonWorkforce.Controllers
             }
         }
 
+        // Get employee by Id
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
