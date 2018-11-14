@@ -1,7 +1,7 @@
 ﻿@*David Taylor
 Displays full name and department of all employees with links for edit, details, and delete*@ 
 
-@model IEnumerable<BangazonWorkforce.Models.Employee>
+@model BangazonWorkforce.Models.ViewModels.EmployeeIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -16,16 +16,16 @@ Displays full name and department of all employees with links for edit, details,
     <thead>
         <tr>
             <th>
-                FullName
+                Full Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DepartmentId)
+                Department
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Employees) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)

@@ -8,6 +8,7 @@ using BangazonWorkforce.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Dapper;
+using BangazonWorkforce.Models.ViewModels;
 
 namespace BangazonWorkforce.Controllers
 {
@@ -49,7 +50,9 @@ namespace BangazonWorkforce.Controllers
                         return employee;
                     });
 
-                return View(employees);
+                EmployeeIndexViewModel viewModel = new EmployeeIndexViewModel();
+                viewModel.Employees = employees;
+                return View(viewModel);
             }
         }
 
