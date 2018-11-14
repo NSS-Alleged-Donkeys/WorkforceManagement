@@ -45,8 +45,11 @@ namespace BangazonWorkforce.IntegrationTests
         {
             // Arrange
             Department department = (await GetAllDepartments()).First();
+
             string url = "/employee/create";
+
             HttpResponseMessage createPageResponse = await _client.GetAsync(url);
+
             IHtmlDocument createPage = await HtmlHelpers.GetDocumentAsync(createPageResponse);
 
             string newFirstName = "FirstName-" + Guid.NewGuid().ToString();
@@ -93,6 +96,7 @@ namespace BangazonWorkforce.IntegrationTests
             {
                 Assert.False(cb.IsChecked);
             } 
+            
         }
 
         [Fact]
@@ -152,6 +156,42 @@ namespace BangazonWorkforce.IntegrationTests
             {
                 Assert.False(cb.IsChecked);
             }
+        }
+
+
+        [Fact]
+        public async Task Get_CreateEmployeeForm()
+        {
+            //Arrange
+            string url = "/employee/create";
+
+            //Act
+            HttpResponseMessage response = await _client.GetAsync(url);
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+
+            IHtmlDocument createPage = await HtmlHelpers.GetDocumentAsync(response);
+
+            Assert.Contains(
+                createPage.QuerySelectorAll("input"),
+                i => i.Id == "Employee_FirstName");
+
+            
+            Assert.Contains(
+               createPage.QuerySelectorAll("input"),
+               i => i.Id == "Employee_LastName");
+
+             
+            Assert.Contains(
+               createPage.QuerySelectorAll("input"),
+               i => i.Id == "Employee_IsSupervisor");
+
+               
+            Assert.Contains(
+               createPage.QuerySelectorAll("select"),
+               i => i.Id == "Employee_DepartmentId");
+            
         }
 
         private async Task<List<Employee>> GetAllEmloyees()
