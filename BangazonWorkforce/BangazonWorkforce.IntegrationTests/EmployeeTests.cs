@@ -41,9 +41,12 @@ namespace BangazonWorkforce.IntegrationTests
         }
 
         [Fact]
+        //David Taylor
+        //Checks if employees display correctly from the index view
         public async Task Get_IndexDisplaysCorrectEmployees()
         {
             // Arrange
+            // Create variables to represent data to be tested
             string url = "/employee";
             string firstName = "Matt";
             string lastName = "Hall";
@@ -51,13 +54,16 @@ namespace BangazonWorkforce.IntegrationTests
             string fullName = firstName + " " + lastName;
 
             // Act
+            // Get HTTP response from variable defined above
             HttpResponseMessage response = await _client.GetAsync(url);
 
             // Assert
+            // Check if there is any data is displayed on index 
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             Assert.Equal("text/html; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
-
+            
+            //Check if data displayed matches data in database
             IHtmlDocument indexPage = await HtmlHelpers.GetDocumentAsync(response);
             IHtmlCollection<IElement> tds = indexPage.QuerySelectorAll("td");
             Assert.Contains(tds, td => td.TextContent.Trim() == fullName);
