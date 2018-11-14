@@ -6,7 +6,7 @@
         {
             get
             {
-                return "__PLACE CONNECTION STRING HERE__";
+                return "Server=RUSSELL-SURFACE\\SQLEXPRESS;Initial Catalog=BangazonSprint;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             }
         }
     }
