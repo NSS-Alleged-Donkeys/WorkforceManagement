@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BangazonWorkforce.Models
 {
@@ -10,21 +7,18 @@ namespace BangazonWorkforce.Models
 	{
 		public int Id { get; set; }
 
-		[Required(ErrorMessage = "You must provide a first name for this employee")]
-		[Display(Name = "First Name")]
-		public string FirstName { get; set; }
+		[Required(ErrorMessage = "You must provide a purchase date for this computer")]
+		[Display(Name = "Purchase Date")]
+		public DateTime PurchaseDate { get; set; }
 
-		[Required(ErrorMessage = "You must provide a last name for this employee")]
-		[Display(Name = "Last Name")]
-		public string LastName { get; set; }
+		public DateTime DecomissionDate { get; set; }
 
-		[Display(Name = "Is Supervisor?")]
-		public bool IsSupervisor { get; set; }
+		[Required(ErrorMessage = "You must specify the make of this computer")]
+		[Display(Name = "Make")]
+		public string Make { get; set; }
 
-		[Required(ErrorMessage = "Please select which department this employee is assigned to")]
-		[Display(Name = "Department")]
-		public int DepartmentId { get; set; }
-
-		public Department Department { get; set; }
+		[Required(ErrorMessage = "You must specify the manufacturer of this computer")]
+		[Display(Name = "Manufacturer")]
+		public string Manufacturer { get; set; }
 	}
 }

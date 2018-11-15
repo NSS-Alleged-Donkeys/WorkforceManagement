@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BangazonWorkforce.Models
 {
@@ -10,21 +7,20 @@ namespace BangazonWorkforce.Models
 	{
 		public int Id { get; set; }
 
-		[Required(ErrorMessage = "You must provide a first name for this employee")]
-		[Display(Name = "First Name")]
-		public string FirstName { get; set; }
+		[Required(ErrorMessage = "You must provide a name for this Training Program")]
+		[Display(Name = "Name")]
+		public string Name { get; set; }
 
-		[Required(ErrorMessage = "You must provide a last name for this employee")]
-		[Display(Name = "Last Name")]
-		public string LastName { get; set; }
+		[Required(ErrorMessage = "You must provide a start date for this Training Program")]
+		[Display(Name = "Start Date")]
+		public DateTime StartDate { get; set; }
 
-		[Display(Name = "Is Supervisor?")]
-		public bool IsSupervisor { get; set; }
+		[Required(ErrorMessage = "You must provide a start date for this Training Program")]
+		[Display(Name = "End Date")]
+		public DateTime EndDate { get; set; }
 
-		[Required(ErrorMessage = "Please select which department this employee is assigned to")]
-		[Display(Name = "Department")]
-		public int DepartmentId { get; set; }
-
-		public Department Department { get; set; }
+		[Required(ErrorMessage = "You must specify the maximum attendees for this Training Program")]
+		[Display(Name = "Maximum Attendees")]
+		public int MaxAttendees { get; set; }
 	}
 }
