@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using Dapper;
+using AngleSharp.Dom;
 
 namespace BangazonWorkforce.IntegrationTests
 {
@@ -39,6 +40,35 @@ namespace BangazonWorkforce.IntegrationTests
                 response.Content.Headers.ContentType.ToString());
         }
 
+        [Fact]
+        //David Taylor
+        //Checks if employees display correctly from the index view
+        public async Task Get_IndexDisplaysCorrectEmployees()
+        {
+            // Arrange
+            // Create variables to represent data to be tested
+            string url = "/employee";
+            string firstName = "Madison";
+            string lastName = "Peper";
+            string dept = "IT";
+            string fullName = firstName + " " + lastName;
+
+            // Act
+            // Get HTTP response from variable defined above
+            HttpResponseMessage response = await _client.GetAsync(url);
+
+            // Assert
+            // Check if there is any data is displayed on index 
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+            Assert.Equal("text/html; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+            
+            //Check if data displayed matches data in database
+            IHtmlDocument indexPage = await HtmlHelpers.GetDocumentAsync(response);
+            IHtmlCollection<IElement> tds = indexPage.QuerySelectorAll("td");
+            Assert.Contains(tds, td => td.TextContent.Trim() == fullName);
+            Assert.Contains(tds, td => td.TextContent.Trim() == dept);
+        }
 
         [Fact]
         public async Task Post_CreateAddsEmployee()
@@ -87,16 +117,6 @@ namespace BangazonWorkforce.IntegrationTests
                 lastRow.QuerySelectorAll("td"),
                 td => td.TextContent.Contains(departmentName));
 
-            IHtmlInputElement cb = (IHtmlInputElement)lastRow.QuerySelector("input[type='checkbox']");
-            if (isSupervisor == "true")
-            {
-                Assert.True(cb.IsChecked);
-            }
-            else
-            {
-                Assert.False(cb.IsChecked);
-            } 
-            
         }
 
         [Fact]
@@ -147,15 +167,6 @@ namespace BangazonWorkforce.IntegrationTests
                 lastRow.QuerySelectorAll("td"),
                 td => td.TextContent.Contains(departmentName));
 
-            IHtmlInputElement cb = (IHtmlInputElement)lastRow.QuerySelector("input[type='checkbox']");
-            if (isSupervisor == "true")
-            {
-                Assert.True(cb.IsChecked);
-            }
-            else
-            {
-                Assert.False(cb.IsChecked);
-            }
         }
 
 
@@ -199,7 +210,7 @@ namespace BangazonWorkforce.IntegrationTests
             using (IDbConnection conn = new SqlConnection(Config.ConnectionSring))
             {
                 IEnumerable<Employee> allEmployees =
-                    await conn.QueryAsync<Employee>( @"SELECT Id, FirstName, LastName, 
+                    await conn.QueryAsync<Employee>(@"SELECT Id, FirstName, LastName, 
                                                               IsSupervisor, DepartmentId 
                                                          FROM Employee
                                                      ORDER BY Id");
@@ -211,10 +222,10 @@ namespace BangazonWorkforce.IntegrationTests
         {
             using (IDbConnection conn = new SqlConnection(Config.ConnectionSring))
             {
-                IEnumerable<Department> allDepartments = 
+                IEnumerable<Department> allDepartments =
                     await conn.QueryAsync<Department>(@"SELECT Id, Name, Budget FROM Department");
                 return allDepartments.ToList();
             }
         }
-   }
+    }
 }
