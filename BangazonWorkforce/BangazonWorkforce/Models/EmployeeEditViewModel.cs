@@ -4,9 +4,15 @@ using System.Linq;
 
 namespace BangazonWorkforce.Models
 {
-    public class EmployeeAddEditViewModel
+    public class EmployeeEditViewModel
     {
-        public Employee Employee { get; set; }
+        public string LastName { get; set; }
+
+        public int DepartmentId { get; set; }
+
+        public int ComputerId { get; set; }
+
+        public List<TrainingProgram> AllTrainingPrograms { get; set; }
 
         public List<Department> AllDepartments { get; set; }
 
@@ -20,14 +26,8 @@ namespace BangazonWorkforce.Models
                 }
 
                 return AllDepartments
-                        .Select((d) => new SelectListItem(d.Name, d.Id.ToString()))
-<<<<<<< HEAD
-                        .ToList()
-                        ;
-                        
-=======
+                        .Select(d => new SelectListItem(d.Name, d.Id.ToString()))
                         .ToList();
->>>>>>> master
             }
         }
     }
