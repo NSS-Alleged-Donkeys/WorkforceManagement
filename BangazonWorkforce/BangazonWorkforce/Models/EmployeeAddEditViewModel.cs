@@ -21,13 +21,7 @@ namespace BangazonWorkforce.Models
 
                 return AllDepartments
                         .Select((d) => new SelectListItem(d.Name, d.Id.ToString()))
-<<<<<<< HEAD
-                        .ToList()
-                        ;
-                        
-=======
                         .ToList();
->>>>>>> master
             }
         }
     }

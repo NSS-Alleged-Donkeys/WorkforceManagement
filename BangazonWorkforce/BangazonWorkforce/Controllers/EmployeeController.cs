@@ -117,15 +117,18 @@ namespace BangazonWorkforce.Controllers
             }
 
             List<Department> allDepartments = await GetAllDepartments();
+            List<Computer> allComputers = await GetAllComputers();
             Employee employee = await GetById(id.Value);
             if (employee == null)
             {
                 return NotFound();
             }
 
-            EmployeeAddEditViewModel viewmodel = new EmployeeAddEditViewModel
+            EmployeeEditViewModel viewmodel = new EmployeeEditViewModel
             {
-                Employee = employee,
+                LastName = employee.LastName,
+                EmployeeId = employee.Id,
+                AllComputers = allComputers,
                 AllDepartments = allDepartments
             };
 
@@ -137,9 +140,9 @@ namespace BangazonWorkforce.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, EmployeeAddEditViewModel viewmodel)
+        public async Task<IActionResult> Edit(int id, EmployeeEditViewModel viewmodel)
         {
-            if (id != viewmodel.Employee.Id)
+            if (id != viewmodel.EmployeeId)
             {
                 return NotFound();
             }
@@ -151,16 +154,19 @@ namespace BangazonWorkforce.Controllers
                 return View(viewmodel);
             }
 
-            Employee employee = viewmodel.Employee;
+            EmployeeEditViewModel employee = viewmodel;
 
             using (IDbConnection conn = Connection)
             {
                 string sql = $@"UPDATE Employee 
-                                   SET FirstName = '{employee.FirstName}', 
-                                       LastName = '{employee.LastName}', 
-                                       IsSupervisor = {(employee.IsSupervisor ? 1 : 0)},
+                                   SET LastName = '{employee.LastName}',
                                        DepartmentId = {employee.DepartmentId}
-                                 WHERE id = {id}";
+                                 WHERE id = {id}
+
+                                UPDATE ComputerEmployee
+                                   SET ComputerId = { employee.ComputerId}
+                                 WHERE EmployeeId = { employee.EmployeeId }
+                                 ";
 
                 await conn.ExecuteAsync(sql);
                 return RedirectToAction(nameof(Index));
@@ -231,6 +237,17 @@ namespace BangazonWorkforce.Controllers
 
                 IEnumerable<Department> departments = await conn.QueryAsync<Department>(sql);
                 return departments.ToList();
+            }
+        }
+
+        private async Task<List<Computer>> GetAllComputers()
+        {
+            using (IDbConnection conn = Connection)
+            {
+                string sql = $@"SELECT Id, Make, Manufacturer, PurchaseDate FROM Computer";
+
+                IEnumerable<Computer> computers = await conn.QueryAsync<Computer>(sql);
+                return computers.ToList();
             }
         }
     }

@@ -6,13 +6,34 @@ namespace BangazonWorkforce.Models
 {
     public class EmployeeEditViewModel
     {
+        public int EmployeeId { get; set;  }
+
         public string LastName { get; set; }
 
         public int DepartmentId { get; set; }
 
         public int ComputerId { get; set; }
 
-        public List<TrainingProgram> AllTrainingPrograms { get; set; }
+        public List<Computer> AllComputers { get; set; }
+
+        public List<SelectListItem> AllComputerOptions
+        {
+            get
+            {
+                if (AllComputers == null)
+                {
+                    return null;
+                }
+
+                return AllComputers
+                        .Select(c => new SelectListItem(c.Make, c.Id.ToString()))
+                        .ToList();
+            }
+        }
+
+        public SelectList AllTrainingPrograms { get; set; }
+
+        public IEnumerable<TrainingProgram> SelectedTrainingPrograms { get; set; }
 
         public List<Department> AllDepartments { get; set; }
 
