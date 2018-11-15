@@ -124,7 +124,7 @@ namespace BangazonWorkforce.IntegrationTests
         {
             // Arrange
             Employee employee = (await GetAllEmloyees()).Last();
-            Department department = (await GetAllDepartments()).Last();
+            Department department = (await GetAllDepartments()).Last(); 
 
             string url = $"employee/edit/{employee.Id}";
             HttpResponseMessage editPageResponse = await _client.GetAsync(url);

@@ -122,6 +122,7 @@ namespace BangazonWorkforce.Controllers
             }
 
             List<Department> allDepartments = await GetAllDepartments();
+            List<Computer> EmployeeComputer = await GetEmployeeComputerId(id.Value);
             List<Computer> allComputers = await GetAllComputers();
             Employee employee = await GetById(id.Value);
             if (employee == null)
@@ -133,6 +134,8 @@ namespace BangazonWorkforce.Controllers
             {
                 LastName = employee.LastName,
                 EmployeeId = employee.Id,
+                DepartmentId = employee.DepartmentId,
+                ComputerId = EmployeeComputer.First().Id,
                 AllComputers = allComputers,
                 AllDepartments = allDepartments
             };
@@ -155,7 +158,9 @@ namespace BangazonWorkforce.Controllers
             if (!ModelState.IsValid)
             {
                 List<Department> allDepartments = await GetAllDepartments();
+                List<Computer> allComputers = await GetAllComputers();
                 viewmodel.AllDepartments = allDepartments;
+                viewmodel.AllComputers = allComputers;
                 return View(viewmodel);
             }
 
@@ -167,11 +172,13 @@ namespace BangazonWorkforce.Controllers
                                    SET LastName = '{employee.LastName}',
                                        DepartmentId = {employee.DepartmentId}
                                  WHERE id = {id}
+                                ;
 
                                 UPDATE ComputerEmployee
                                    SET ComputerId = { employee.ComputerId}
-                                 WHERE EmployeeId = { employee.EmployeeId }
-                                 ";
+                                 WHERE EmployeeId = { id }
+                                ;
+                                 "; 
 
                 await conn.ExecuteAsync(sql);
                 return RedirectToAction(nameof(Index));
@@ -249,7 +256,30 @@ namespace BangazonWorkforce.Controllers
         {
             using (IDbConnection conn = Connection)
             {
-                string sql = $@"SELECT Id, Make, Manufacturer, PurchaseDate FROM Computer";
+                string sql = $@"SELECT c.Id, 
+                                       c.Make,
+                                       c.Manufacturer, 
+                                       c.PurchaseDate
+                                  FROM Computer c
+                             ";
+
+                IEnumerable<Computer> computers = await conn.QueryAsync<Computer>(sql);
+                return computers.ToList();
+            }
+        }
+
+        private async Task<List<Computer>> GetEmployeeComputerId(int num)
+        {
+            using (IDbConnection conn = Connection)
+            {
+                string sql = $@"SELECT c.Id, 
+                                       c.Make,
+                                       c.Manufacturer, 
+                                       c.PurchaseDate
+                                FROM Computer c
+                                JOIN ComputerEmployee ce ON c.Id = ce.ComputerId
+                                WHERE ce.EmployeeId = {num}
+                             ;";
 
                 IEnumerable<Computer> computers = await conn.QueryAsync<Computer>(sql);
                 return computers.ToList();
