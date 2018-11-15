@@ -8,5 +8,7 @@ namespace BangazonWorkforce.Models.ViewModels
     public class DepartmentDetailViewModel
     {
         public IEnumerable<Employee> Employees;
+
+        public Department Departments;
     }
 }
