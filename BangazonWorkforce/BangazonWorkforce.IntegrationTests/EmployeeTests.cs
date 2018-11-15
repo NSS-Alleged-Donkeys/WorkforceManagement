@@ -48,9 +48,9 @@ namespace BangazonWorkforce.IntegrationTests
             // Arrange
             // Create variables to represent data to be tested
             string url = "/employee";
-            string firstName = "Matt";
-            string lastName = "Hall";
-            string dept = "Sales";
+            string firstName = "Madison";
+            string lastName = "Peper";
+            string dept = "IT";
             string fullName = firstName + " " + lastName;
 
             // Act
@@ -114,15 +114,6 @@ namespace BangazonWorkforce.IntegrationTests
                 lastRow.QuerySelectorAll("td"),
                 td => td.TextContent.Contains(departmentName));
 
-            IHtmlInputElement cb = (IHtmlInputElement)lastRow.QuerySelector("input[type='checkbox']");
-            if (isSupervisor == "true")
-            {
-                Assert.True(cb.IsChecked);
-            }
-            else
-            {
-                Assert.False(cb.IsChecked);
-            } 
         }
 
         [Fact]
@@ -173,15 +164,6 @@ namespace BangazonWorkforce.IntegrationTests
                 lastRow.QuerySelectorAll("td"),
                 td => td.TextContent.Contains(departmentName));
 
-            IHtmlInputElement cb = (IHtmlInputElement)lastRow.QuerySelector("input[type='checkbox']");
-            if (isSupervisor == "true")
-            {
-                Assert.True(cb.IsChecked);
-            }
-            else
-            {
-                Assert.False(cb.IsChecked);
-            }
         }
 
         private async Task<List<Employee>> GetAllEmloyees()
@@ -189,7 +171,7 @@ namespace BangazonWorkforce.IntegrationTests
             using (IDbConnection conn = new SqlConnection(Config.ConnectionSring))
             {
                 IEnumerable<Employee> allEmployees =
-                    await conn.QueryAsync<Employee>( @"SELECT Id, FirstName, LastName, 
+                    await conn.QueryAsync<Employee>(@"SELECT Id, FirstName, LastName, 
                                                               IsSupervisor, DepartmentId 
                                                          FROM Employee
                                                      ORDER BY Id");
@@ -201,10 +183,10 @@ namespace BangazonWorkforce.IntegrationTests
         {
             using (IDbConnection conn = new SqlConnection(Config.ConnectionSring))
             {
-                IEnumerable<Department> allDepartments = 
+                IEnumerable<Department> allDepartments =
                     await conn.QueryAsync<Department>(@"SELECT Id, Name, Budget FROM Department");
                 return allDepartments.ToList();
             }
         }
-   }
+    }
 }
