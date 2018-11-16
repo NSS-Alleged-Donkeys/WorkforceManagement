@@ -1,11 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Dapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BangazonWorkforce.Models
 {
     public class EmployeeEditViewModel
     {
+        private IConfiguration _config;
+        private IDbConnection Connection
+        {
+            get
+            {
+                return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            }
+        }
+
         public int EmployeeId { get; set;  }
 
         public string LastName { get; set; }
@@ -13,6 +30,14 @@ namespace BangazonWorkforce.Models
         public int DepartmentId { get; set; }
 
         public int ComputerId { get; set; }
+
+        public List<int> PreselectedTrainingPrograms { get; set; }
+
+        public List<TrainingProgram> AllTrainingPrograms { get; set; }
+
+        public List<TrainingProgram> EmployeeTrainingPrograms { get; set; }
+
+        public List<int> SelectedTrainingPrograms { get; set; }
 
         public List<Computer> AllComputers { get; set; }
 
@@ -31,9 +56,12 @@ namespace BangazonWorkforce.Models
             }
         }
 
-        public SelectList AllTrainingPrograms { get; set; }
+        // Property to hold all training sessions for selection on edit form
+        [Display(Name = "Training Sessions")]
+        public MultiSelectList Sessions { get; set; }
 
-        public IEnumerable<TrainingProgram> SelectedTrainingPrograms { get; set; }
+        // This will accept the selected training sessions on form POST
+        public List<int> SelectedSessions { get; set; }
 
         public List<Department> AllDepartments { get; set; }
 
@@ -49,6 +77,37 @@ namespace BangazonWorkforce.Models
                 return AllDepartments
                         .Select(d => new SelectListItem(d.Name, d.Id.ToString()))
                         .ToList();
+            }
+        }
+
+        public List<SelectListItem> AllTrainingProgramOptions
+        {
+            get
+            {
+                if (AllTrainingPrograms == null)
+                {
+                    return null;
+                }
+
+                PreselectedTrainingPrograms = EmployeeTrainingPrograms.Select((tp) => tp.Id).ToList();
+
+                List<SelectListItem> allOptions = AllTrainingPrograms
+                        .Select((tp) => new SelectListItem(tp.Name, tp.Id.ToString()))
+                        .ToList();
+                //List<SelectListItem> builtTrainingPrograms = new List<SelectListItem>();
+                foreach (int Id in PreselectedTrainingPrograms)
+                {
+                    foreach (SelectListItem sli in allOptions)
+                    {
+                        if (sli.Value == Id.ToString())
+                        {
+                            sli.Selected = true;
+
+                        }
+                    }
+                }
+
+                return allOptions;
             }
         }
     }

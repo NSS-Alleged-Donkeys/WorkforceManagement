@@ -124,21 +124,27 @@ namespace BangazonWorkforce.Controllers
             List<Department> allDepartments = await GetAllDepartments();
             List<Computer> EmployeeComputer = await GetEmployeeComputerId(id.Value);
             List<Computer> allComputers = await GetAllComputers();
+            List<TrainingProgram> EmployeeTrainingPrograms = await GetEmployeeTrainingPrograms(id.Value);
+            List<TrainingProgram> allTrainingPrograms = await GetAllTrainingPrograms();
+            
             Employee employee = await GetById(id.Value);
             if (employee == null)
             {
                 return NotFound();
             }
 
-            EmployeeEditViewModel viewmodel = new EmployeeEditViewModel
-            {
-                LastName = employee.LastName,
-                EmployeeId = employee.Id,
-                DepartmentId = employee.DepartmentId,
-                ComputerId = EmployeeComputer.First().Id,
-                AllComputers = allComputers,
-                AllDepartments = allDepartments
-            };
+            EmployeeEditViewModel viewmodel = new EmployeeEditViewModel();
+
+            viewmodel.LastName = employee.LastName;
+            viewmodel.EmployeeId = employee.Id;
+            viewmodel.DepartmentId = employee.DepartmentId;
+            viewmodel.ComputerId = EmployeeComputer.First().Id;
+            viewmodel.AllComputers = allComputers;
+            viewmodel.AllDepartments = allDepartments;
+            viewmodel.EmployeeTrainingPrograms = EmployeeTrainingPrograms;
+            viewmodel.AllTrainingPrograms = allTrainingPrograms;
+                
+            
 
             return View(viewmodel);
         }
@@ -159,12 +165,15 @@ namespace BangazonWorkforce.Controllers
             {
                 List<Department> allDepartments = await GetAllDepartments();
                 List<Computer> allComputers = await GetAllComputers();
+                List<TrainingProgram> allTrainingPrograms = await GetAllTrainingPrograms();
                 viewmodel.AllDepartments = allDepartments;
                 viewmodel.AllComputers = allComputers;
                 return View(viewmodel);
             }
 
             EmployeeEditViewModel employee = viewmodel;
+
+            List<int> SelectedPrograms = employee.SelectedTrainingPrograms;
 
             using (IDbConnection conn = Connection)
             {
@@ -177,8 +186,26 @@ namespace BangazonWorkforce.Controllers
                                 UPDATE ComputerEmployee
                                    SET ComputerId = { employee.ComputerId}
                                  WHERE EmployeeId = { id }
-                                ;
-                                 "; 
+                                ;";
+
+                string resettp = $@" DELETE FROM EmployeeTraining WHERE EmployeeId={employee.EmployeeId};";
+
+                string tpsql = "";
+
+                
+
+                foreach (var p in SelectedPrograms)
+                {
+                    {
+                        tpsql = tpsql + $@"
+                        INSERT INTO EmployeeTraining
+                        (EmployeeId, TrainingProgramId)
+                        VALUES
+                        ({employee.EmployeeId}, {p});";
+                    }
+                }
+
+                sql = sql + resettp + tpsql;
 
                 await conn.ExecuteAsync(sql);
                 return RedirectToAction(nameof(Index));
@@ -267,6 +294,7 @@ namespace BangazonWorkforce.Controllers
                 return computers.ToList();
             }
         }
+        
 
         private async Task<List<Computer>> GetEmployeeComputerId(int num)
         {
@@ -283,6 +311,42 @@ namespace BangazonWorkforce.Controllers
 
                 IEnumerable<Computer> computers = await conn.QueryAsync<Computer>(sql);
                 return computers.ToList();
+            }
+        }
+
+        private async Task<List<TrainingProgram>> GetAllTrainingPrograms()
+        {
+            using (IDbConnection conn = Connection)
+            {
+                string sql = $@"SELECT Id, 
+                                       Name,
+                                       StartDate, 
+                                       EndDate,
+                                       MaxAttendees
+                                  FROM TrainingProgram
+                             ";
+
+                IEnumerable<TrainingProgram> TrainingPrograms = await conn.QueryAsync<TrainingProgram>(sql);
+                return TrainingPrograms.ToList();
+            }
+        }
+
+        private async Task<List<TrainingProgram>> GetEmployeeTrainingPrograms(int num)
+        {
+            using (IDbConnection conn = Connection)
+            {
+                string sql = $@"SELECT tp.Id, 
+                                       tp.Name,
+                                       tp.StartDate, 
+                                       tp.EndDate,
+                                       tp.MaxAttendees
+                                FROM TrainingProgram tp
+                                JOIN EmployeeTraining et ON tp.Id = et.TrainingProgramId
+                                WHERE et.EmployeeId = {num}
+                             ;";
+
+                IEnumerable<TrainingProgram> trainingPrograms = await conn.QueryAsync<TrainingProgram>(sql);
+                return trainingPrograms.ToList();
             }
         }
     }
