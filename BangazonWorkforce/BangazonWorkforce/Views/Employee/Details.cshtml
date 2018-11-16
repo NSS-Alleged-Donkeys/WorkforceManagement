@@ -28,6 +28,22 @@
         <dd>
             @Html.DisplayFor(model => model.ComputerMake) by @Html.DisplayFor(model => model.ComputerManufacturer)
         </dd>
+        <dt>
+            Training Programs
+        </dt>
+
+        
+        @foreach (var trainingProgram in Model.TrainingPrograms)
+        {
+            <dd>
+                @Html.DisplayFor(modelTrainingProgram => trainingProgram.Name)
+            </dd>
+            <dd>
+                Start Date: @Html.DisplayFor(modelTrainingProgram => trainingProgram.StartDate)
+
+                End Date: @Html.DisplayFor(modelTrainingProgram => trainingProgram.EndDate)
+            </dd>
+        }
     </dl>
 </div>
 <div>

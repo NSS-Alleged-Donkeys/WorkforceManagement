@@ -288,7 +288,27 @@ VALUES
 
 INSERT INTO ComputerEmployee
 VALUES (1,1, '20111011 08:00:00 AM', '20121010 14:00:00 PM ');
+
 INSERT INTO ComputerEmployee
 Values (2,2, '20121011 08:00:00 AM', '20141210 16:00:00 PM');
+
 INSERT INTO ComputerEmployee
 Values (3,3, '20170305 07:00:00 AM', '20181110 04:00:00 AM');
+
+INSERT INTO EmployeeTraining
+VALUES(1,1);
+
+INSERT INTO EmployeeTraining
+VALUES(1,2);
+
+INSERT INTO EmployeeTraining
+VALUES(2,2);
+
+INSERT INTO EmployeeTraining
+VALUES(3,1);
+
+INSERT INTO EmployeeTraining
+VALUES(3,2);
+
+INSERT INTO EmployeeTraining
+VALUES(3,3);

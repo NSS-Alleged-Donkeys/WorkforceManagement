@@ -23,6 +23,8 @@ namespace BangazonWorkforce.Models
 		public string ComputerMake { get; set; }
 
 		public string ComputerManufacturer { get; set; }
+
+		public List<TrainingProgram> TrainingPrograms { get; set; }
 	}
 }
 

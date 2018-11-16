@@ -65,6 +65,7 @@ namespace BangazonWorkforce.Controllers
             }
 			Employee employee = await GetById(id.Value);
 			List<Computer> computer = await GetEmployeeComputerId(id.Value);
+			List<TrainingProgram> training = await GetTrainingPrograms(id.Value);
 			if (employee == null)
 			{
 				return NotFound();
@@ -77,14 +78,8 @@ namespace BangazonWorkforce.Controllers
 				DepartmentId = employee.DepartmentId,
 				DepartmentName = employee.Department.Name,
 				ComputerMake = computer.First().Make,
-				ComputerManufacturer = computer.First().Manufacturer
-
-				/*LastName = employee.LastName,
-				EmployeeId = employee.Id,
-				DepartmentId = employee.DepartmentId,
-				ComputerId = EmployeeComputer.First().Id,
-				AllComputers = allComputers,
-				AllDepartments = allDepartments*/
+				ComputerManufacturer = computer.First().Manufacturer,
+				TrainingPrograms = training
 			};
 
 			return View(viewmodel);
@@ -287,6 +282,24 @@ namespace BangazonWorkforce.Controllers
 
 				IEnumerable<Computer> computers = await conn.QueryAsync<Computer>(sql);
 				return computers.ToList();
+			}
+		}
+
+		private async Task<List<TrainingProgram>> GetTrainingPrograms(int num) {
+			using (IDbConnection conn = Connection)
+			{
+				string sql = $@"SELECT t.Id, 
+                                       t.Name,
+                                       t.StartDate, 
+                                       t.EndDate
+                                FROM TrainingProgram t
+                                JOIN EmployeeTraining et ON t.Id = et.TrainingProgramId
+								JOIN Employee e ON et.EmployeeId = e.Id
+                                WHERE et.EmployeeId = {num}
+                             ;";
+
+				IEnumerable<TrainingProgram> trainingPrograms = await conn.QueryAsync<TrainingProgram>(sql);
+				return trainingPrograms.ToList();
 			}
 		}
 	}
