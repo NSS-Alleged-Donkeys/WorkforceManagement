@@ -1,4 +1,4 @@
-﻿@model BangazonWorkforce.Models.Employee
+﻿@model BangazonWorkforce.Models.EmployeeDetailViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,35 +11,22 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
+            Full Name
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.FirstName)
+            @Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.LastName)
+            Department
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.LastName)
+            @Html.DisplayFor(model => model.DepartmentName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.IsSupervisor)
+            Computer
         </dt>
         <dd>
-            @if (!Model.IsSupervisor)
-            {
-                <span>Yes</span>
-            }
-            else
-            {
-                <span>No</span>
-            }
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DepartmentId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Department.Name)
+            @Html.DisplayFor(model => model.ComputerMake) by @Html.DisplayFor(model => model.ComputerManufacturer)
         </dd>
     </dl>
 </div>

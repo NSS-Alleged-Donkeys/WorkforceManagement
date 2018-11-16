@@ -63,13 +63,31 @@ namespace BangazonWorkforce.Controllers
             {
                 return NotFound();
             }
+			Employee employee = await GetById(id.Value);
+			List<Computer> computer = await GetEmployeeComputerId(id.Value);
+			if (employee == null)
+			{
+				return NotFound();
+			}
+			EmployeeDetailViewModel viewmodel = new EmployeeDetailViewModel
+			{
+				FirstName = employee.FirstName,
+				LastName = employee.LastName,
+				Id = employee.Id,
+				DepartmentId = employee.DepartmentId,
+				DepartmentName = employee.Department.Name,
+				ComputerMake = computer.First().Make,
+				ComputerManufacturer = computer.First().Manufacturer
 
-            Employee employee = await GetById(id.Value);
-            if (employee == null)
-            {
-                return NotFound();
-            }
-            return View(employee);
+				/*LastName = employee.LastName,
+				EmployeeId = employee.Id,
+				DepartmentId = employee.DepartmentId,
+				ComputerId = EmployeeComputer.First().Id,
+				AllComputers = allComputers,
+				AllDepartments = allDepartments*/
+			};
+
+			return View(viewmodel);
         }
 
         // GET: Employee/Create
@@ -210,7 +228,6 @@ namespace BangazonWorkforce.Controllers
                 string sql = $@"SELECT e.Id, 
                                        e.FirstName,
                                        e.LastName, 
-                                       e.IsSupervisor,
                                        e.DepartmentId,
                                        d.Id,
                                        d.Name,
@@ -238,5 +255,39 @@ namespace BangazonWorkforce.Controllers
                 return departments.ToList();
             }
         }
-    }
+
+		private async Task<List<Computer>> GetAllComputers()
+		{
+			using (IDbConnection conn = Connection)
+			{
+				string sql = $@"SELECT c.Id, 
+                                       c.Make,
+                                       c.Manufacturer, 
+                                       c.PurchaseDate
+                                  FROM Computer c
+                             ";
+
+				IEnumerable<Computer> computers = await conn.QueryAsync<Computer>(sql);
+				return computers.ToList();
+			}
+		}
+
+		private async Task<List<Computer>> GetEmployeeComputerId(int num)
+		{
+			using (IDbConnection conn = Connection)
+			{
+				string sql = $@"SELECT c.Id, 
+                                       c.Make,
+                                       c.Manufacturer, 
+                                       c.PurchaseDate
+                                FROM Computer c
+                                JOIN ComputerEmployee ce ON c.Id = ce.ComputerId
+                                WHERE ce.EmployeeId = {num}
+                             ;";
+
+				IEnumerable<Computer> computers = await conn.QueryAsync<Computer>(sql);
+				return computers.ToList();
+			}
+		}
+	}
 }
