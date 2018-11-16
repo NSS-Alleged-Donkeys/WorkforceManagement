@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using BangazonWorkforce.Models;
+using BangazonWorkforce.Models.ViewModels;
 
 namespace BangazonWorkforce.Controllers
 {
@@ -26,15 +27,29 @@ namespace BangazonWorkforce.Controllers
         {
             _config = config;
         }
-
+        // *Author*: Madison Peper
+        // *Purpose*: A GET statement that returns Name, Budget, and Total Employees from each Department
         public async Task<IActionResult> Index()
         {
             using (IDbConnection conn = Connection)
             {
-                string sql = "SELECT Id, Name, Budget FROM Department";
-                IEnumerable<Department> departments = await conn.QueryAsync<Department>(sql);
+                string sql = $@"
+                SELECT 
+                    d.Name, 
+                    d.Budget,
+                    COUNT(e.DepartmentId) TotalEmployees
+                FROM Department d
+                LEFT JOIN Employee e ON d.Id = e.DepartmentId
+                GROUP BY d.Name, d.Budget;";
 
-                return View(departments);
+                // The sql is returning a Type<Department>, so the IEnumerable must be of the same type
+                // Then I'm making a new instance of the ViewAllDeptViewModel called "model"
+                // And setting the the new instance's Department property to what the sql returned (departments)
+                IEnumerable<Department> departments = await conn.QueryAsync<Department>(sql);
+                ViewAllDeptViewModel model = new ViewAllDeptViewModel();
+                model.Departments = departments.ToList();
+                return View(model);
+
             }
         }
 
