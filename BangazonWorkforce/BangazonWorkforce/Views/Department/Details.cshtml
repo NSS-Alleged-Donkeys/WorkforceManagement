@@ -4,7 +4,7 @@
     ViewData["Title"] = Html.DisplayFor(model => model.Departments.Name);
 }
 
-<h2>Details</h2>
+<h2>@ViewData["Title"]</h2>
 
 <div>
     <h4>Department</h4>
@@ -13,9 +13,12 @@
         <dt>
             Employees
         </dt>
+        @foreach (var item in Model.Employees)
+        {
             <dd>
                 @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
             </dd>
+        }
         </dl>
 </div>
 <div>

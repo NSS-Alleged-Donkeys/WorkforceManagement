@@ -46,14 +46,35 @@ namespace BangazonWorkforce.Controllers
                 return NotFound();
             }
 
-            Department department = await GetById(id.Value);
-            if (department == null)
+            Department departments = await GetById(id.Value);
+            if (departments == null)
             {
                 return NotFound();
             }
-            DepartmentDetailViewModel viewModel = new DepartmentDetailViewModel();
-            viewModel.Departments = department;
-            return View(viewModel);
+            using (IDbConnection conn = Connection)
+            {
+                string sql = $@"
+                SELECT 
+                e.Id,
+                e.FirstName,
+                e.LastName,
+                d.Id,
+                d.Name
+                FROM Department d
+                JOIN Employee e ON d.Id = e.DepartmentId
+                WHERE d.Id = {id}
+                ";
+                IEnumerable<Employee> employees = await conn.QueryAsync<Employee, Department, Employee>(
+                    sql,
+                    (employee, department) => {
+                        employee.DepartmentId = department.Id;
+                            return employee;
+                    });
+                DepartmentDetailViewModel viewModel = new DepartmentDetailViewModel();
+                viewModel.Departments = departments;
+                viewModel.Employees = employees;
+                return View(viewModel);
+            }
         }
 
         // GET: Department/Create
