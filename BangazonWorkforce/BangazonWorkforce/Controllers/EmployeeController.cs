@@ -77,11 +77,18 @@ namespace BangazonWorkforce.Controllers
 				Id = employee.Id,
 				DepartmentId = employee.DepartmentId,
 				DepartmentName = employee.Department.Name,
-				ComputerMake = computer.First().Make,
-				ComputerManufacturer = computer.First().Manufacturer,
-				TrainingPrograms = training
+				ComputerMake = null,
+				ComputerManufacturer = null,
+				TrainingPrograms = null
 			};
-
+			if (computer.Count()>0) {
+				viewmodel.ComputerMake = computer.First().Make;
+				viewmodel.ComputerManufacturer = computer.First().Manufacturer;
+			}
+			if (training != null)
+			{
+				viewmodel.TrainingPrograms = training;
+			}
 			return View(viewmodel);
         }
 
