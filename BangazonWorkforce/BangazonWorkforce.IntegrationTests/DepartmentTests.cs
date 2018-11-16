@@ -53,7 +53,7 @@ namespace BangazonWorkforce.IntegrationTests
         {
             // Arrange
             string url = "/department";
-            
+
             // Act
             HttpResponseMessage response = await _client.GetAsync(url);
 
@@ -69,12 +69,12 @@ namespace BangazonWorkforce.IntegrationTests
         public async Task Get_DetailsDisplayEmployees() {
 
             // Arrange
-            
-            Department department = (await GetAllDepartments()).First();
 
-            int id = department.Id;
-            string url = $"/department/details/{id}";
-            string deptName = department.Name;
+            Employee employee = (await GetAllEmployees()).First();
+
+            string url = $"/department/details/2";
+            string employeeFirstName = employee.FirstName;
+            string employeeLastName = employee.LastName;
             
             
             // Act
@@ -89,7 +89,9 @@ namespace BangazonWorkforce.IntegrationTests
 
             IHtmlDocument detailPage = await HtmlHelpers.GetDocumentAsync(response);
             IHtmlCollection<IElement> viewData = detailPage.QuerySelectorAll("h2");
-            Assert.Contains(viewData, h2 => h2.TextContent.Trim() == deptName);
+            Assert.Contains(viewData, h2 => h2.TextContent.Trim() == "IT");
+            IHtmlCollection<IElement> lis = detailPage.QuerySelectorAll("li");
+            Assert.Contains(lis, li => li.TextContent.Trim() == employeeFirstName + " " + employeeLastName); 
         }
 
         [Fact]

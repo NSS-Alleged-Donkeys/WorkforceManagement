@@ -16,11 +16,7 @@
             <ul>
                 @foreach (var item in Model.Employees)
                 {
-                    <li>
-            
-                    @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
-            
-                    </li>
+                    <li>@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</li>
                 }
             </ul>
         </dd>
