@@ -48,19 +48,28 @@ namespace BangazonWorkforce.IntegrationTests
                i => i.Id == "Budget");
         }
 
+        // *Author*: Madison Peper
+        // *Purpose*: Testing the department index to see if the "Sales" department with a budget of "100000" is on the page
+
         [Fact]
         public async Task Get_IndexReturnsSuccessAndCorrectContentType()
         {
             // Arrange
             string url = "/department";
-
+            
             // Act
             HttpResponseMessage response = await _client.GetAsync(url);
+            IHtmlDocument indexPage = await HtmlHelpers.GetDocumentAsync(response);
+
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
-            Assert.Equal("text/html; charset=utf-8",
-                response.Content.Headers.ContentType.ToString());
+
+            Assert.Contains(indexPage.QuerySelectorAll("td"), d => 
+            d.TextContent.Contains("Sales"));
+
+            Assert.Contains(indexPage.QuerySelectorAll("td"), d =>
+            d.TextContent.Contains("100000"));
         }
 
 
@@ -75,7 +84,7 @@ namespace BangazonWorkforce.IntegrationTests
 
             Employee employee = (await GetAllEmployees()).First();
 
-            string url = $"/department/details/2";
+            string url = $"/department/details/1";
             string employeeFirstName = employee.FirstName;
             string employeeLastName = employee.LastName;
             
@@ -84,6 +93,7 @@ namespace BangazonWorkforce.IntegrationTests
             // Gets HTTP response for data represented above
 
             HttpResponseMessage response = await _client.GetAsync(url);
+
 
             // Assert
             // Checks if there is any data represented on details 
@@ -94,7 +104,7 @@ namespace BangazonWorkforce.IntegrationTests
             // Checks if data displayed represents data in database
             IHtmlDocument detailPage = await HtmlHelpers.GetDocumentAsync(response);
             IHtmlCollection<IElement> viewData = detailPage.QuerySelectorAll("h2");
-            Assert.Contains(viewData, h2 => h2.TextContent.Trim() == "IT");
+            Assert.Contains(viewData, h2 => h2.TextContent.Trim() == "Marketing");
             IHtmlCollection<IElement> lis = detailPage.QuerySelectorAll("li");
             Assert.Contains(lis, li => li.TextContent.Trim() == employeeFirstName + " " + employeeLastName); 
         }
