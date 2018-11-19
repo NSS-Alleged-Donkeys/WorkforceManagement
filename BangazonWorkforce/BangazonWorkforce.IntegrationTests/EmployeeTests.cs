@@ -158,7 +158,9 @@ namespace BangazonWorkforce.IntegrationTests
         {
             // Arrange
             Employee employee = (await GetAllEmloyees()).First();
-            Department department = (await GetAllDepartments()).Last();
+            Department department = (await GetAllDepartments()).First();
+            TrainingProgram TrainingPrograms = (await GetEmployeeTrainingPrograms(employee.Id)).First();
+            Computer computer = (await GetAllComputers()).First();
 
             string url = $"employee/edit/{employee.Id}";
             HttpResponseMessage editPageResponse = await _client.GetAsync(url);
@@ -171,6 +173,8 @@ namespace BangazonWorkforce.IntegrationTests
             string isSupervisor = employee.IsSupervisor ? "false" : "true";
             string departmentId = department.Id.ToString();
             string departmentName = department.Name;
+            string trainingProgramId = TrainingPrograms.Id.ToString();
+            string computerId = computer.Id.ToString();
 
 
             // Act
@@ -179,7 +183,9 @@ namespace BangazonWorkforce.IntegrationTests
                 new Dictionary<string, string>
                 {
                     {"LastName", lastName},
-                    {"DepartmentId", departmentId}
+                    {"DepartmentId", departmentId},
+                    {"ComputerId", computerId},
+                    {"SelectedTrainingPrograms", trainingProgramId }
                 });
 
 
@@ -253,6 +259,26 @@ namespace BangazonWorkforce.IntegrationTests
             {
                 IEnumerable<Department> allDepartments =
                     await conn.QueryAsync<Department>(@"SELECT Id, Name, Budget FROM Department");
+                return allDepartments.ToList();
+            }
+        }
+
+        private async Task<List<Computer>> GetAllComputers()
+        {
+            using (IDbConnection conn = new SqlConnection(Config.ConnectionSring))
+            {
+                IEnumerable<Computer> allComputers =
+                    await conn.QueryAsync<Computer>(@"SELECT Id, Make, Manufacturer FROM Computer");
+                return allComputers.ToList();
+            }
+        }
+
+        private async Task<List<TrainingProgram>> GetEmployeeTrainingPrograms(int id)
+        {
+            using (IDbConnection conn = new SqlConnection(Config.ConnectionSring))
+            {
+                IEnumerable<TrainingProgram> allDepartments =
+                    await conn.QueryAsync<TrainingProgram>($"SELECT Id FROM TrainingProgram ");
                 return allDepartments.ToList();
             }
         }
