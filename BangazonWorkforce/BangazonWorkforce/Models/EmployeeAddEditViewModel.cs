@@ -7,7 +7,9 @@ namespace BangazonWorkforce.Models
     public class EmployeeAddEditViewModel
     {
         public Employee Employee { get; set; }
+
         public List<Department> AllDepartments { get; set; }
+
         public List<SelectListItem> AllDepartmentOptions
         {
             get

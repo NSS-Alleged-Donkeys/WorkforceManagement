@@ -1,4 +1,4 @@
-﻿@model BangazonWorkforce.Models.EmployeeAddEditViewModel
+﻿@model BangazonWorkforce.Models.EmployeeEditViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,35 +12,36 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Employee.Id" />
+            <input type="hidden" asp-for="EmployeeId" />
             <div class="form-group">
-                <label asp-for="Employee.FirstName" class="control-label"></label>
-                <input asp-for="Employee.FirstName" class="form-control" />
-                <span asp-validation-for="Employee.FirstName" class="text-danger"></span>
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Employee.LastName" class="control-label"></label>
-                <input asp-for="Employee.LastName" class="form-control" />
-                <span asp-validation-for="Employee.LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                        <input asp-for="Employee.IsSupervisor" /> 
-                        @Html.DisplayNameFor(model => model.Employee.IsSupervisor)
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label asp-for="Employee.DepartmentId" class="control-label"></label>
-                <select asp-for="Employee.DepartmentId" 
-                        asp-items="Model.AllDepartmentOptions"
+                <label asp-for="DepartmentId" class="control-label"></label>
+                <select asp-for="@Model.DepartmentId"
+                        asp-items="@Model.AllDepartmentOptions"
                         class="form-control"></select>
-                <span asp-validation-for="Employee.DepartmentId" class="text-danger"></span>
+                <span asp-validation-for="DepartmentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ComputerId" class="control-label"></label>
+                <select asp-for="ComputerId"
+                        asp-items="@Model.AllComputerOptions"
+                        class="form-control"></select>
+                <span asp-validation-for="ComputerId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedTrainingPrograms" class="control-label"></label>
+                <select multiple asp-for="SelectedTrainingPrograms"
+                        asp-items="Model.AllTrainingProgramOptions"
+                        class="form-control custom-select"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
+
         </form>
     </div>
 </div>
