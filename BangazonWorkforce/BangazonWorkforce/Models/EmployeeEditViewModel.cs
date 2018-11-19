@@ -25,10 +25,13 @@ namespace BangazonWorkforce.Models
 
         public int EmployeeId { get; set;  }
 
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
+        [Display(Name = "Department")]
         public int DepartmentId { get; set; }
 
+        [Display(Name = "Computer")]
         public int ComputerId { get; set; }
 
         public List<int> PreselectedTrainingPrograms { get; set; }
@@ -37,6 +40,7 @@ namespace BangazonWorkforce.Models
 
         public List<TrainingProgram> EmployeeTrainingPrograms { get; set; }
 
+        [Display(Name = "Selected Training Programs")]
         public List<int> SelectedTrainingPrograms { get; set; }
 
         public List<Computer> AllComputers { get; set; }
@@ -55,13 +59,6 @@ namespace BangazonWorkforce.Models
                         .ToList();
             }
         }
-
-        // Property to hold all training sessions for selection on edit form
-        [Display(Name = "Training Sessions")]
-        public MultiSelectList Sessions { get; set; }
-
-        // This will accept the selected training sessions on form POST
-        public List<int> SelectedSessions { get; set; }
 
         public List<Department> AllDepartments { get; set; }
 
@@ -89,12 +86,11 @@ namespace BangazonWorkforce.Models
                     return null;
                 }
 
-                PreselectedTrainingPrograms = EmployeeTrainingPrograms.Select((tp) => tp.Id).ToList();
+                PreselectedTrainingPrograms = EmployeeTrainingPrograms.Select(tp => tp.Id).ToList();
 
                 List<SelectListItem> allOptions = AllTrainingPrograms
-                        .Select((tp) => new SelectListItem(tp.Name, tp.Id.ToString()))
+                        .Select(tp => new SelectListItem(tp.Name, tp.Id.ToString()))
                         .ToList();
-                //List<SelectListItem> builtTrainingPrograms = new List<SelectListItem>();
                 foreach (int Id in PreselectedTrainingPrograms)
                 {
                     foreach (SelectListItem sli in allOptions)
