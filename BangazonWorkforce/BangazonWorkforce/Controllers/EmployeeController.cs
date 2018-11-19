@@ -63,13 +63,34 @@ namespace BangazonWorkforce.Controllers
             {
                 return NotFound();
             }
-
-            Employee employee = await GetById(id.Value);
-            if (employee == null)
-            {
-                return NotFound();
-            }
-            return View(employee);
+			Employee employee = await GetById(id.Value);
+			List<Computer> computer = await GetEmployeeComputerId(id.Value);
+			List<TrainingProgram> training = await GetTrainingPrograms(id.Value);
+			if (employee == null)
+			{
+				return NotFound();
+			}
+			// This creates an initial constructor for the employee detail and checks to see if a computer is available and if the training exists. If the computer list is empty, then it uses the default constructor, if not then it adds the computer using the first method. This is used since an employee only has one computer. The training checks to make sure it has a non-null value, if it does have a non-null value, then it inserts that into the constructor.
+			EmployeeDetailViewModel viewmodel = new EmployeeDetailViewModel
+			{
+				FirstName = employee.FirstName,
+				LastName = employee.LastName,
+				Id = employee.Id,
+				DepartmentId = employee.DepartmentId,
+				DepartmentName = employee.Department.Name,
+				ComputerMake = null,
+				ComputerManufacturer = null,
+				TrainingPrograms = null
+			};
+			if (computer.Count()>0) {
+				viewmodel.ComputerMake = computer.First().Make;
+				viewmodel.ComputerManufacturer = computer.First().Manufacturer;
+			}
+			if (training != null)
+			{
+				viewmodel.TrainingPrograms = training;
+			}
+			return View(viewmodel);
         }
 
         // GET: Employee/Create
@@ -210,7 +231,6 @@ namespace BangazonWorkforce.Controllers
                 string sql = $@"SELECT e.Id, 
                                        e.FirstName,
                                        e.LastName, 
-                                       e.IsSupervisor,
                                        e.DepartmentId,
                                        d.Id,
                                        d.Name,
@@ -238,5 +258,57 @@ namespace BangazonWorkforce.Controllers
                 return departments.ToList();
             }
         }
-    }
+
+		private async Task<List<Computer>> GetAllComputers()
+		{
+			using (IDbConnection conn = Connection)
+			{
+				string sql = $@"SELECT c.Id, 
+                                       c.Make,
+                                       c.Manufacturer, 
+                                       c.PurchaseDate
+                                  FROM Computer c
+                             ";
+
+				IEnumerable<Computer> computers = await conn.QueryAsync<Computer>(sql);
+				return computers.ToList();
+			}
+		}
+
+		private async Task<List<Computer>> GetEmployeeComputerId(int num)
+		{
+			using (IDbConnection conn = Connection)
+			{
+				string sql = $@"SELECT c.Id, 
+                                       c.Make,
+                                       c.Manufacturer, 
+                                       c.PurchaseDate
+                                FROM Computer c
+                                JOIN ComputerEmployee ce ON c.Id = ce.ComputerId
+                                WHERE ce.EmployeeId = {num}
+                             ;";
+
+				IEnumerable<Computer> computers = await conn.QueryAsync<Computer>(sql);
+				return computers.ToList();
+			}
+		}
+
+		private async Task<List<TrainingProgram>> GetTrainingPrograms(int num) {
+			using (IDbConnection conn = Connection)
+			{
+				string sql = $@"SELECT t.Id, 
+                                       t.Name,
+                                       t.StartDate, 
+                                       t.EndDate
+                                FROM TrainingProgram t
+                                JOIN EmployeeTraining et ON t.Id = et.TrainingProgramId
+								JOIN Employee e ON et.EmployeeId = e.Id
+                                WHERE et.EmployeeId = {num}
+                             ;";
+
+				IEnumerable<TrainingProgram> trainingPrograms = await conn.QueryAsync<TrainingProgram>(sql);
+				return trainingPrograms.ToList();
+			}
+		}
+	}
 }
