@@ -41,6 +41,9 @@ namespace BangazonWorkforce.IntegrationTests
                i => i.Id == "Budget");
         }
 
+        // *Author*: Madison Peper
+        // *Purpose*: Testing the department index to see if the "Sales" department with a budget of "100000" is on the page
+
         [Fact]
         public async Task Get_IndexReturnsSuccessAndCorrectContentType()
         {
@@ -49,11 +52,17 @@ namespace BangazonWorkforce.IntegrationTests
             
             // Act
             HttpResponseMessage response = await _client.GetAsync(url);
+            IHtmlDocument indexPage = await HtmlHelpers.GetDocumentAsync(response);
+
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
-            Assert.Equal("text/html; charset=utf-8",
-                response.Content.Headers.ContentType.ToString());
+
+            Assert.Contains(indexPage.QuerySelectorAll("td"), d => 
+            d.TextContent.Contains("Sales"));
+
+            Assert.Contains(indexPage.QuerySelectorAll("td"), d =>
+            d.TextContent.Contains("100000"));
         }
 
         [Fact]
