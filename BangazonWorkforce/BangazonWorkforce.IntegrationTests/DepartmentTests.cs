@@ -84,7 +84,7 @@ namespace BangazonWorkforce.IntegrationTests
 
             Employee employee = (await GetAllEmployees()).First();
 
-            string url = $"/department/details/2";
+            string url = $"/department/details/1";
             string employeeFirstName = employee.FirstName;
             string employeeLastName = employee.LastName;
             
@@ -104,7 +104,7 @@ namespace BangazonWorkforce.IntegrationTests
             // Checks if data displayed represents data in database
             IHtmlDocument detailPage = await HtmlHelpers.GetDocumentAsync(response);
             IHtmlCollection<IElement> viewData = detailPage.QuerySelectorAll("h2");
-            Assert.Contains(viewData, h2 => h2.TextContent.Trim() == "IT");
+            Assert.Contains(viewData, h2 => h2.TextContent.Trim() == "Marketing");
             IHtmlCollection<IElement> lis = detailPage.QuerySelectorAll("li");
             Assert.Contains(lis, li => li.TextContent.Trim() == employeeFirstName + " " + employeeLastName); 
         }
