@@ -39,6 +39,10 @@ namespace BangazonWorkforce.Controllers
             }
         }
 
+
+        // David Taylor
+        // Gets details of department
+        // Displays employees of a department on details page
         public async Task<IActionResult> Details(int? id) 
         {
             if (id == null)

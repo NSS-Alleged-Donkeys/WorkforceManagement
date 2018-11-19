@@ -66,9 +66,12 @@ namespace BangazonWorkforce.IntegrationTests
 
 
         [Fact]
+        // David Taylor
+        // Department Details displays all employees for department
         public async Task Get_DetailsDisplayEmployees() {
 
             // Arrange
+            // Creates variables to represent data to be tested
 
             Employee employee = (await GetAllEmployees()).First();
 
@@ -78,15 +81,17 @@ namespace BangazonWorkforce.IntegrationTests
             
             
             // Act
+            // Gets HTTP response for data represented above
 
             HttpResponseMessage response = await _client.GetAsync(url);
 
             // Assert
-
+            // Checks if there is any data represented on details 
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             Assert.Equal("text/html; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
-
+            
+            // Checks if data displayed represents data in database
             IHtmlDocument detailPage = await HtmlHelpers.GetDocumentAsync(response);
             IHtmlCollection<IElement> viewData = detailPage.QuerySelectorAll("h2");
             Assert.Contains(viewData, h2 => h2.TextContent.Trim() == "IT");
