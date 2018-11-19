@@ -150,14 +150,15 @@ namespace BangazonWorkforce.IntegrationTests
             Assert.Contains(
                 createPage.QuerySelectorAll(".form-control"),
                 fc => fc.Id == "SelectedTrainingPrograms");
+
         }
 
         [Fact]
         public async Task Post_EditWillUpdateEmployee()
         {
             // Arrange
-            Employee employee = (await GetAllEmloyees()).Last();
-            Department department = (await GetAllDepartments()).Last(); 
+            Employee employee = (await GetAllEmloyees()).First();
+            Department department = (await GetAllDepartments()).Last();
 
             string url = $"employee/edit/{employee.Id}";
             HttpResponseMessage editPageResponse = await _client.GetAsync(url);
@@ -170,7 +171,6 @@ namespace BangazonWorkforce.IntegrationTests
             string isSupervisor = employee.IsSupervisor ? "false" : "true";
             string departmentId = department.Id.ToString();
             string departmentName = department.Name;
-            
 
 
             // Act
@@ -178,10 +178,8 @@ namespace BangazonWorkforce.IntegrationTests
                 editPage,
                 new Dictionary<string, string>
                 {
-                    {"Employee_FirstName", firstName},
-                    {"Employee_LastName", lastName},
-                    {"Employee_IsSupervisor", isSupervisor},
-                    {"Employee_DepartmentId", departmentId}
+                    {"LastName", lastName},
+                    {"DepartmentId", departmentId}
                 });
 
 
@@ -189,18 +187,15 @@ namespace BangazonWorkforce.IntegrationTests
             response.EnsureSuccessStatusCode();
 
             IHtmlDocument indexPage = await HtmlHelpers.GetDocumentAsync(response);
-            var lastRow = indexPage.QuerySelector("tbody tr:last-child");
+            var lastRow = indexPage.QuerySelector("tbody tr:first-child");
 
-            Assert.Contains(
-                lastRow.QuerySelectorAll("td"),
-                td => td.TextContent.Contains(firstName));
+           
             Assert.Contains(
                 lastRow.QuerySelectorAll("td"),
                 td => td.TextContent.Contains(lastName));
             Assert.Contains(
                 lastRow.QuerySelectorAll("td"),
                 td => td.TextContent.Contains(departmentName));
-
         }
 
 
@@ -259,16 +254,6 @@ namespace BangazonWorkforce.IntegrationTests
                 IEnumerable<Department> allDepartments =
                     await conn.QueryAsync<Department>(@"SELECT Id, Name, Budget FROM Department");
                 return allDepartments.ToList();
-            }
-        }
-
-        private async Task<List<Department>> GetAllTrainingPrograms()
-        {
-            using (IDbConnection conn = new SqlConnection(Config.ConnectionSring))
-            {
-                IEnumerable<Department> allTrainingPrograms =
-                    await conn.QueryAsync<Department>(@"SELECT Id, Name, Budget FROM TrainingPrograms");
-                return allTrainingPrograms.ToList();
             }
         }
     }
