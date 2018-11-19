@@ -120,6 +120,39 @@ namespace BangazonWorkforce.IntegrationTests
         }
 
         [Fact]
+        public async Task Get_EditEmployeeForm()
+        {
+            //Arrange
+            string url = "/employee/edit/1";
+
+            //Act
+            HttpResponseMessage response = await _client.GetAsync(url);
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+
+            IHtmlDocument createPage = await HtmlHelpers.GetDocumentAsync(response);
+
+
+            Assert.Contains(
+               createPage.QuerySelectorAll(".form-control"),
+               fc => fc.Id == "LastName");
+
+
+            Assert.Contains(
+               createPage.QuerySelectorAll(".form-control"),
+               i => i.Id == "DepartmentId");
+
+            Assert.Contains(
+              createPage.QuerySelectorAll(".form-control"),
+              i => i.Id == "ComputerId");
+
+            Assert.Contains(
+                createPage.QuerySelectorAll(".form-control"),
+                fc => fc.Id == "SelectedTrainingPrograms");
+        }
+
+        [Fact]
         public async Task Post_EditWillUpdateEmployee()
         {
             // Arrange
