@@ -70,6 +70,7 @@ namespace BangazonWorkforce.Controllers
 			{
 				return NotFound();
 			}
+			// This creates an initial constructor for the employee detail and checks to see if a computer is available and if the training exists. If the computer list is empty, then it uses the default constructor, if not then it adds the computer using the first method. This is used since an employee only has one computer. The training checks to make sure it has a non-null value, if it does have a non-null value, then it inserts that into the constructor.
 			EmployeeDetailViewModel viewmodel = new EmployeeDetailViewModel
 			{
 				FirstName = employee.FirstName,

@@ -71,8 +71,8 @@ namespace BangazonWorkforce.IntegrationTests
         }
 
 		[Fact]
-		//David Taylor
-		//Checks if employees display correctly from the index view
+		//Mark Hale
+		//Checks if employees details correctly
 		public async Task GET_DetailsDisplaysCorrectEmployeeInformation()
 		{
 			// Arrange
@@ -92,7 +92,7 @@ namespace BangazonWorkforce.IntegrationTests
 			HttpResponseMessage response = await _client.GetAsync(url);
 
 			// Assert
-			// Check if there is any data is displayed on index 
+			// Check if there is any data is displayed on details/1 
 			response.EnsureSuccessStatusCode(); // Status Code 200-299
 			Assert.Equal("text/html; charset=utf-8",
 				response.Content.Headers.ContentType.ToString());
