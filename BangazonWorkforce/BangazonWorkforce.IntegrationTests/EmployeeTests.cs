@@ -170,6 +170,7 @@ namespace BangazonWorkforce.IntegrationTests
             string isSupervisor = employee.IsSupervisor ? "false" : "true";
             string departmentId = department.Id.ToString();
             string departmentName = department.Name;
+            
 
 
             // Act
@@ -258,6 +259,16 @@ namespace BangazonWorkforce.IntegrationTests
                 IEnumerable<Department> allDepartments =
                     await conn.QueryAsync<Department>(@"SELECT Id, Name, Budget FROM Department");
                 return allDepartments.ToList();
+            }
+        }
+
+        private async Task<List<Department>> GetAllTrainingPrograms()
+        {
+            using (IDbConnection conn = new SqlConnection(Config.ConnectionSring))
+            {
+                IEnumerable<Department> allTrainingPrograms =
+                    await conn.QueryAsync<Department>(@"SELECT Id, Name, Budget FROM TrainingPrograms");
+                return allTrainingPrograms.ToList();
             }
         }
     }
