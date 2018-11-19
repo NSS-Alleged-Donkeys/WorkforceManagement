@@ -53,9 +53,9 @@ namespace BangazonWorkforce.IntegrationTests
             string dept = "IT";
             string fullName = firstName + " " + lastName;
 
-            // Act
-            // Get HTTP response from variable defined above
-            HttpResponseMessage response = await _client.GetAsync(url);
+			// Act
+			// Get HTTP response from variable defined above
+			HttpResponseMessage response = await _client.GetAsync(url);
 
             // Assert
             // Check if there is any data is displayed on index 
@@ -70,7 +70,43 @@ namespace BangazonWorkforce.IntegrationTests
             Assert.Contains(tds, td => td.TextContent.Trim() == dept);
         }
 
-        [Fact]
+		[Fact]
+		//Mark Hale
+		//Checks if employees details correctly
+		public async Task GET_DetailsDisplaysCorrectEmployeeInformation()
+		{
+			// Arrange
+			// Create variables to represent data to be tested
+			string url = "/employee/Details/1";
+			string firstName = "Madison";
+			string lastName = "Peper";
+			string dept = "IT";
+			string fullName = firstName + " " + lastName;
+			string computerManufacturer = "Schmapple";
+			string computerMake = "Schmapple III";
+			string wholeComputer = computerManufacturer + " " +computerMake;
+			string firstTrainingProgramName = "BS Training";
+
+			// Act
+			// Get HTTP response from variable defined above
+			HttpResponseMessage response = await _client.GetAsync(url);
+
+			// Assert
+			// Check if there is any data is displayed on details/1 
+			response.EnsureSuccessStatusCode(); // Status Code 200-299
+			Assert.Equal("text/html; charset=utf-8",
+				response.Content.Headers.ContentType.ToString());
+
+			//Check if data displayed matches data in database
+			IHtmlDocument indexPage = await HtmlHelpers.GetDocumentAsync(response);
+			IHtmlCollection<IElement> dds = indexPage.QuerySelectorAll("dd");
+			Assert.Contains(dds, dd => dd.TextContent.Trim() == fullName);
+			Assert.Contains(dds, dd => dd.TextContent.Trim() == dept);
+			Assert.Contains(dds, dd => dd.TextContent.Trim() == wholeComputer);
+			Assert.Contains(dds, dd => dd.TextContent.Trim() == firstTrainingProgramName);
+		}
+
+		[Fact]
         public async Task Post_CreateAddsEmployee()
         {
             // Arrange

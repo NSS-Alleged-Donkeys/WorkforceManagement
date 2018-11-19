@@ -1,4 +1,4 @@
-﻿@model BangazonWorkforce.Models.Employee
+﻿@model BangazonWorkforce.Models.EmployeeDetailViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,36 +11,39 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
+            Full Name
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.FirstName)
+            @Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.LastName)
+            Department
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.LastName)
+            @Html.DisplayFor(model => model.DepartmentName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.IsSupervisor)
+            Computer
         </dt>
         <dd>
-            @if (!Model.IsSupervisor)
-            {
-                <span>Yes</span>
-            }
-            else
-            {
-                <span>No</span>
-            }
+            @Html.DisplayFor(model => model.ComputerManufacturer) @Html.DisplayFor(model => model.ComputerMake)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.DepartmentId)
+            Training Programs
         </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Department.Name)
-        </dd>
+
+        
+        @foreach (var trainingProgram in Model.TrainingPrograms)
+        {
+            <dd>
+                @Html.DisplayFor(modelTrainingProgram => trainingProgram.Name)
+            </dd>
+            <dd>
+                Start Date: @Html.DisplayFor(modelTrainingProgram => trainingProgram.StartDate)
+
+                End Date: @Html.DisplayFor(modelTrainingProgram => trainingProgram.EndDate)
+            </dd>
+        }
     </dl>
 </div>
 <div>
