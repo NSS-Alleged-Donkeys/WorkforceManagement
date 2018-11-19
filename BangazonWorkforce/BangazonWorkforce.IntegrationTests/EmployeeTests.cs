@@ -48,9 +48,9 @@ namespace BangazonWorkforce.IntegrationTests
             // Arrange
             // Create variables to represent data to be tested
             string url = "/employee";
-            string firstName = "Madison";
-            string lastName = "Peper";
-            string dept = "IT";
+            string firstName = "Taylor";
+            string lastName = "Gulley";
+            string dept = "Marketing";
             string fullName = firstName + " " + lastName;
 
 			// Act
@@ -77,15 +77,15 @@ namespace BangazonWorkforce.IntegrationTests
 		{
 			// Arrange
 			// Create variables to represent data to be tested
-			string url = "/employee/Details/1";
-			string firstName = "Madison";
-			string lastName = "Peper";
-			string dept = "IT";
+			string url = "/employee/Details/2";
+			string firstName = "Taylor";
+			string lastName = "Gulley";
+			string dept = "Marketing";
 			string fullName = firstName + " " + lastName;
-			string computerManufacturer = "Schmapple";
-			string computerMake = "Schmapple III";
+			string computerManufacturer = "Schmicrosoft";
+			string computerMake = "Schmurface Pro";
 			string wholeComputer = computerManufacturer + " " +computerMake;
-			string firstTrainingProgramName = "BS Training";
+			string firstTrainingProgramName = "POS Training";
 
 			// Act
 			// Get HTTP response from variable defined above
