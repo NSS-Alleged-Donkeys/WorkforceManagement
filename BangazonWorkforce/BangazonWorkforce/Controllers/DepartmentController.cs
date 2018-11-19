@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using BangazonWorkforce.Models;
+using BangazonWorkforce.Models.ViewModels;
 
 namespace BangazonWorkforce.Controllers
 {
@@ -38,6 +39,10 @@ namespace BangazonWorkforce.Controllers
             }
         }
 
+
+        // David Taylor
+        // Gets details of department
+        // Displays employees of a department on details page
         public async Task<IActionResult> Details(int? id) 
         {
             if (id == null)
@@ -45,12 +50,35 @@ namespace BangazonWorkforce.Controllers
                 return NotFound();
             }
 
-            Department department = await GetById(id.Value);
-            if (department == null)
+            Department departments = await GetById(id.Value);
+            if (departments == null)
             {
                 return NotFound();
             }
-            return View(department);
+            using (IDbConnection conn = Connection)
+            {
+                string sql = $@"
+                SELECT 
+                e.Id,
+                e.FirstName,
+                e.LastName,
+                d.Id,
+                d.Name
+                FROM Department d
+                JOIN Employee e ON d.Id = e.DepartmentId
+                WHERE d.Id = {id}
+                ";
+                IEnumerable<Employee> employees = await conn.QueryAsync<Employee, Department, Employee>(
+                    sql,
+                    (employee, department) => {
+                        employee.DepartmentId = department.Id;
+                            return employee;
+                    });
+                DepartmentDetailViewModel viewModel = new DepartmentDetailViewModel();
+                viewModel.Departments = departments;
+                viewModel.Employees = employees;
+                return View(viewModel);
+            }
         }
 
         // GET: Department/Create
