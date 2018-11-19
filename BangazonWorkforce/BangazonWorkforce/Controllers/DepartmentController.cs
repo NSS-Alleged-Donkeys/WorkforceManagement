@@ -35,12 +35,13 @@ namespace BangazonWorkforce.Controllers
             {
                 string sql = $@"
                 SELECT 
+                    d.Id,
                     d.Name, 
                     d.Budget,
                     COUNT(e.DepartmentId) TotalEmployees
                 FROM Department d
                 LEFT JOIN Employee e ON d.Id = e.DepartmentId
-                GROUP BY d.Name, d.Budget;";
+                GROUP BY d.Id, d.Name, d.Budget;";
 
                 // The sql is returning a Type<Department>, so the IEnumerable must be of the same type
                 // Then I'm making a new instance of the ViewAllDeptViewModel called "model"
